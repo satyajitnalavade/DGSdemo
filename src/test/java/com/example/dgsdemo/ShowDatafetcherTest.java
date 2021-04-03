@@ -4,10 +4,7 @@ package com.example.dgsdemo;
 import com.example.dgsdemo.datafetchers.ReviewsDataFetcher;
 import com.example.dgsdemo.datafetchers.ShowDataFetcher;
 import com.example.dgsdemo.dataloader.ReviewsDataLoader;
-import com.example.dgsdemo.generated.client.AddReviewGraphQLQuery;
-import com.example.dgsdemo.generated.client.AddReviewProjectionRoot;
-import com.example.dgsdemo.generated.client.ShowsGraphQLQuery;
-import com.example.dgsdemo.generated.client.ShowsProjectionRoot;
+import com.example.dgsdemo.generated.client.*;
 import com.example.dgsdemo.generated.types.Review;
 import com.example.dgsdemo.generated.types.Show;
 import com.example.dgsdemo.generated.types.SubmittedReview;
@@ -121,6 +118,32 @@ public class ShowDatafetcherTest {
         verify(reviewsService).reviewsForShows(1);
     }
 
+    @Test
+    void addReviewsMutation(){
+
+        List<SubmittedReview> submittedReviews = Arrays.asList(
+
+                SubmittedReview.newBuilder().showid(1)
+                .username("testuser")
+                .startScore(5).build(),
+
+                SubmittedReview.newBuilder().showid(2)
+                        .username("testuser2")
+                        .startScore(4).build()
+
+        );
+
+
+
+        GraphQLQueryRequest graphQLQueryRequest = new GraphQLQueryRequest(AddReviewsGraphQLQuery.newRequest().reviews(submittedReviews).build()
+                                                                            ,new AddReviewProjectionRoot().username().starScore()
+                                                                            );
+        ExecutionResult executionResult = dgsQueryExecutor.execute(graphQLQueryRequest.serialize());
+        assertThat(executionResult.getErrors()).isEmpty();
+        verify(reviewsService).reviewsForShows(Arrays.asList(1,2));
+
+
+    }
 
 
 }

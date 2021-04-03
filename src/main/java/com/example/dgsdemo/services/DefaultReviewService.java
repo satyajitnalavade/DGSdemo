@@ -93,4 +93,9 @@ public class DefaultReviewService implements ReviewService {
         return reviewsPublisher;
     }
 
+    @Override
+    public void saveReviews(List<SubmittedReview> reviewsInput) {
+        reviewsInput.forEach(this::saveReview);
+    }
+
 }

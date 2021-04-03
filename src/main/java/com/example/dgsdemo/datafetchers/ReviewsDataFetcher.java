@@ -14,9 +14,12 @@ import com.netflix.graphql.dgs.InputArgument;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @DgsComponent
 public class ReviewsDataFetcher {
@@ -44,6 +47,16 @@ public class ReviewsDataFetcher {
         reviewService.saveReview(reviewInput);
         List<Review> reviews = reviewService.reviewsForShows(reviewInput.getShowid());
         return Objects.requireNonNull(reviews);
+    }
+
+    @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.AddReviews)
+    public List<Review> addReviews(@InputArgument(value="reviews",collectionType =SubmittedReview.class) List<SubmittedReview> reviewsInput){
+        reviewService.saveReviews(reviewsInput);
+
+        List<Integer> showIds = reviewsInput.stream().map(submittedReview -> submittedReview.getShowid()).collect(Collectors.toList());
+        Map<Integer, List<Review>> reviews = reviewService.reviewsForShows(showIds);
+        return new ArrayList(reviews.values());
+
     }
 
     @DgsData(parentType = DgsConstants.SUBSCRIPTION_TYPE, field = DgsConstants.SUBSCRIPTION.ReviewAdded)

@@ -17,4 +17,5 @@ public interface ReviewService {
     Map<Integer,List<Review>> reviewsForShows(List<Integer>showIds);
     void saveReview(SubmittedReview reviewInput);
     Publisher<Review> getReviewPublisher();
+    void saveReviews(List<SubmittedReview> reviewsInput);
 }
