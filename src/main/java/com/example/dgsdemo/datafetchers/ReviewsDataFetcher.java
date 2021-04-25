@@ -7,10 +7,7 @@ import com.example.dgsdemo.generated.types.Review;
 import com.example.dgsdemo.generated.types.Show;
 import com.example.dgsdemo.generated.types.SubmittedReview;
 import com.example.dgsdemo.services.ReviewService;
-import com.netflix.graphql.dgs.DgsComponent;
-import com.netflix.graphql.dgs.DgsData;
-import com.netflix.graphql.dgs.DgsDataFetchingEnvironment;
-import com.netflix.graphql.dgs.InputArgument;
+import com.netflix.graphql.dgs.*;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
@@ -42,14 +39,16 @@ public class ReviewsDataFetcher {
         return reviewsDataLoader.load(show.getId());
     }
 
-    @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.AddReview)
-    public List<Review> addReview(@InputArgument("review") SubmittedReview reviewInput) {
-        reviewService.saveReview(reviewInput);
-        List<Review> reviews = reviewService.reviewsForShows(reviewInput.getShowid());
+    //@DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.AddReview)
+    @DgsMutation
+    public List<Review> addReview(@InputArgument("review") SubmittedReview review) {
+        reviewService.saveReview(review);
+        List<Review> reviews = reviewService.reviewsForShows(review.getShowid());
         return Objects.requireNonNull(reviews);
     }
 
-    @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.AddReviews)
+   // @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field = DgsConstants.MUTATION.AddReviews)
+    @DgsMutation
     public List<Review> addReviews(@InputArgument(value="reviews",collectionType =SubmittedReview.class) List<SubmittedReview> reviewsInput){
         reviewService.saveReviews(reviewsInput);
 
@@ -60,8 +59,9 @@ public class ReviewsDataFetcher {
 
     }
 
-    @DgsData(parentType = DgsConstants.SUBSCRIPTION_TYPE, field = DgsConstants.SUBSCRIPTION.ReviewAdded)
-    public Publisher<Review> reviewAddedSubscription(@InputArgument("showId") Integer showId) {
+    //@DgsData(parentType = DgsConstants.SUBSCRIPTION_TYPE, field = DgsConstants.SUBSCRIPTION.ReviewAdded)
+    @DgsSubscription
+    public Publisher<Review> reviewAdded(@InputArgument("showId") Integer showId) {
         return reviewService.getReviewPublisher();
     }
 

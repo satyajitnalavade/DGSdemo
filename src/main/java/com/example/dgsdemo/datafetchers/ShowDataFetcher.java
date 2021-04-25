@@ -6,6 +6,7 @@ import com.example.dgsdemo.generated.types.Show;
 import com.example.dgsdemo.services.ShowService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
+import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -23,12 +24,9 @@ public class ShowDataFetcher {
         this.showService = showService;
     }
 
-    @DgsData(
-            parentType = DgsConstants.QUERY_TYPE,
-            field = DgsConstants.QUERY.Shows
-    )
-    public List<Show> getShows(@InputArgument("") String titleFilter) {
-
+//    @DgsData(parentType = DgsConstants.QUERY_TYPE, field = DgsConstants.QUERY.Shows)
+    @DgsQuery
+    public List<Show>shows(@InputArgument("") String titleFilter) {
         //String titleFilter = dataFetchingEnvironment.getArgument("titleFilter");
         if (titleFilter == null){
             return showService.shows();
