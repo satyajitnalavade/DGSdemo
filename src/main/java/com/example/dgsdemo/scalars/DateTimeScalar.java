@@ -7,7 +7,7 @@ import graphql.schema.idl.RuntimeWiring;
 
 
 /**
- * @author satya
+ * @author satya nalavade
  */
 @DgsComponent
 public class DateTimeScalar {
