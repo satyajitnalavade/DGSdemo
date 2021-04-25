@@ -54,8 +54,9 @@ public class ReviewsDataFetcher {
         reviewService.saveReviews(reviewsInput);
 
         List<Integer> showIds = reviewsInput.stream().map(submittedReview -> submittedReview.getShowid()).collect(Collectors.toList());
-        Map<Integer, List<Review>> reviews = reviewService.reviewsForShows(showIds);
-        return new ArrayList(reviews.values());
+        Map<Integer, List<Review>> showReviews = reviewService.reviewsForShows(showIds);
+        List<Review> reviews = new ArrayList(showReviews.values());
+        return Objects.requireNonNull(reviews);
 
     }
 
