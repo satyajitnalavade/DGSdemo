@@ -32,7 +32,7 @@ type Mutation {
 
 
 input SubmittedReview {
-    showid: Int!
+    showId: Int!
     username: String!
     startScore: Int!
 }

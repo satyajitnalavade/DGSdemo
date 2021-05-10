@@ -31,7 +31,7 @@ public class ReviewsDataLoader implements MappedBatchLoader<Integer, List<Review
   public List<Review> addReview(@InputArgument("review") SubmittedReview reviewInput) {
     reviewsService.saveReview(reviewInput);
 
-    List<Review> reviews = reviewsService.reviewsForShows(reviewInput.getShowid());
+    List<Review> reviews = reviewsService.reviewsForShows(reviewInput.getShowId());
 
     return Objects.requireNonNull(reviews);
   }

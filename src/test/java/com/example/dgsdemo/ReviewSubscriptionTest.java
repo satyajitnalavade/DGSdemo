@@ -80,7 +80,7 @@ public class ReviewSubscriptionTest {
                 AddReviewGraphQLQuery.newRequest()
                         .review(
                                 SubmittedReview.newBuilder()
-                                        .showid(1)
+                                        .showId(1)
                                         .username("testuser")
                                         .startScore(5).build())
                         .build(),

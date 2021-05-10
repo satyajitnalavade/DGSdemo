@@ -17,6 +17,7 @@ import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import com.netflix.graphql.dgs.client.codegen.GraphQLQueryRequest;
 import graphql.ExecutionResult;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -48,7 +49,7 @@ public class ShowDatafetcherTest {
     public void before() {
         Mockito.when(showsService.shows()).thenAnswer(invocation -> Collections.singletonList(Show.newBuilder().id(1).title("mock title").releaseYear(2020).build()));
         Mockito.when(reviewsService.reviewsForShows(Collections.singletonList(1)))
-                .thenAnswer(invocation -> Collections.singletonMap(1, Arrays.asList(
+                .thenAnswer(invocation -> Maps.newHashMap(1, Arrays.asList(
                                                                                         Review.newBuilder().username("DGS User").starScore(5).submittedDate(OffsetDateTime.now()).build(),
                                                                                         Review.newBuilder().username("DGS User 2").starScore(3).submittedDate(OffsetDateTime.now()).build()
                                                                                         )
@@ -106,7 +107,7 @@ public class ShowDatafetcherTest {
         GraphQLQueryRequest graphQLQueryRequest = new GraphQLQueryRequest(
                 AddReviewGraphQLQuery.newRequest()
                         .review(SubmittedReview.newBuilder()
-                                .showid(1)
+                                .showId(1)
                                 .username("testuser")
                                 .startScore(5).build())
                         .build(),
@@ -123,11 +124,11 @@ public class ShowDatafetcherTest {
 
         List<SubmittedReview> submittedReviews = Arrays.asList(
 
-                SubmittedReview.newBuilder().showid(1)
+                SubmittedReview.newBuilder().showId(1)
                 .username("testuser")
                 .startScore(5).build(),
 
-                SubmittedReview.newBuilder().showid(2)
+                SubmittedReview.newBuilder().showId(2)
                         .username("testuser2")
                         .startScore(4).build()
 

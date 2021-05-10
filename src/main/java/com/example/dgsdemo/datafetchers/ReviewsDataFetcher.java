@@ -10,13 +10,13 @@ import com.netflix.graphql.dgs.*;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+ * @author satya
+ */
 @DgsComponent
 public class ReviewsDataFetcher {
   private final ReviewService reviewService;
@@ -44,8 +44,9 @@ public class ReviewsDataFetcher {
   @DgsMutation
   public List<Review> addReview(@InputArgument("review") SubmittedReview review) {
     reviewService.saveReview(review);
-    List<Review> reviews = reviewService.reviewsForShows(review.getShowid());
-    return Objects.requireNonNull(reviews);
+    List<Review> reviews = reviewService.reviewsForShows(review.getShowId());
+    //return Objects.requireNonNull(reviews);
+    return Optional.ofNullable(reviews).orElse(Collections.emptyList());
   }
 
   // @DgsData(parentType = DgsConstants.MUTATION.TYPE_NAME, field =
@@ -58,11 +59,12 @@ public class ReviewsDataFetcher {
 
     List<Integer> showIds =
         reviewsInput.stream()
-            .map(submittedReview -> submittedReview.getShowid())
+            .map(submittedReview -> submittedReview.getShowId())
             .collect(Collectors.toList());
     Map<Integer, List<Review>> showReviews = reviewService.reviewsForShows(showIds);
-    List<Review> reviews = new ArrayList(showReviews.values());
-    return Objects.requireNonNull(reviews);
+    //List<Review> reviews = new ArrayList(showReviews.values());
+    //return Objects.requireNonNull(reviews);
+    return showReviews.values().stream().flatMap(List::stream).collect(Collectors.toList());
   }
 
   // @DgsData(parentType = DgsConstants.SUBSCRIPTION_TYPE, field =

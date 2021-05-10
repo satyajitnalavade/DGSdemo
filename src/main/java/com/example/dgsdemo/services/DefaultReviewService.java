@@ -88,7 +88,7 @@ public class DefaultReviewService implements ReviewService {
   @Override
   public void saveReview(SubmittedReview reviewInput) {
     List<Review> reviewsForShow =
-        reviews.computeIfAbsent(reviewInput.getShowid(), integer -> new ArrayList<>());
+        reviews.computeIfAbsent(reviewInput.getShowId(), integer -> new ArrayList<>());
     Review review =
         Review.newBuilder()
             .username(reviewInput.getUsername())
@@ -106,6 +106,16 @@ public class DefaultReviewService implements ReviewService {
 
   @Override
   public void saveReviews(List<SubmittedReview> reviewsInput) {
-    reviewsInput.forEach(this::saveReview);
+
+    reviewsInput.forEach(reviewInput -> {
+                                            List<Review> reviewsForShow =
+                                            reviews.computeIfAbsent(reviewInput.getShowId(), integer -> new ArrayList<>());
+                                            Review review =
+                                                    Review.newBuilder()
+                                                            .username(reviewInput.getUsername())
+                                                            .starScore(reviewInput.getStartScore())
+                                                            .submittedDate(OffsetDateTime.now())
+                                                            .build();
+    });
   }
 }
